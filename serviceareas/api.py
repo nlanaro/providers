@@ -18,7 +18,7 @@ class ProviderResource(ModelResource):
 
 
 class ServiceAreaResource(ModelResource):
-    provider = fields.ForeignKey(ProviderResource, 'provider')
+    provider = fields.ForeignKey(ProviderResource, 'provider', full=True)
 
     def build_filters(self, filters=None):
         if filters is None:
@@ -67,7 +67,6 @@ class ServiceAreaResource(ModelResource):
         return partial
 
     def apply_filters(self, request, applicable_filters):
-        print applicable_filters
         lat = lng = None
         try:
             if 'lat' in applicable_filters:
@@ -101,6 +100,15 @@ class ServiceAreaResource(ModelResource):
         upper_boundary_y = max([e[1] for e in coordinates])
 
         bundle.obj.bounding_rectangle = [[lower_boundary_x, lower_boundary_y], [upper_boundary_x, upper_boundary_y]]
+        return bundle
+
+    def dehydrate(self, bundle):
+        bundle.data['provider'] = bundle.data['provider'].data['name']
+        del bundle.data['coordinates']
+        del bundle.data['bounding_rectangle']
+        del bundle.data['created']
+        del bundle.data['resource_uri']
+        del bundle.data['id']
         return bundle
 
     def determine_format(self, request):
