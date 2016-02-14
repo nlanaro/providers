@@ -1,0 +1,123 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Mozio providers API",
+        "version": "1.0.0"
+    },
+    "host": "127.0.0.1:8000",
+    "schemes": [
+        "http"
+    ],
+    "basePath": "/api/v1",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/provider": {
+            "get": {
+                "summary": "Providers",
+                "description": "Enpoint to handle providers\n",
+                "tags": [
+                    "Providers"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of providers",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Provider"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/service_area": {
+            "get": {
+                "summary": "Service areas",
+                "description": "Endpoint to handle service areas. Each area must be associated with a provider and must have as coordinates an list of polygons with at least one element. Passing lat and lng will return a list of service areas that contain that point.\n",
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude component of the point to test.",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    },
+                    {
+                        "name": "lng",
+                        "in": "query",
+                        "description": "Longitude component of the point to test.",
+                        "required": false,
+                        "type": "number",
+                        "format": "float"
+                    }
+                ],
+                "tags": [
+                    "Service areas"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "An array of service areas",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ServiceArea"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Provider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "description": "Provider's name"
+                },
+                "email": {
+                    "type": "string",
+                    "description": "Provider's email."
+                },
+                "phone": {
+                    "type": "string",
+                    "description": "Provider's phone number."
+                },
+                "language": {
+                    "type": "string",
+                    "description": "Language associated with this provider as a 2 letters ISO 639 string."
+                },
+                "currency": {
+                    "type": "string",
+                    "description": "Currency associated with this provider as a 3 letters ISO 4217 string."
+                }
+            }
+        },
+        "ServiceArea": {
+            "type": "object",
+            "properties": {
+                "provider": {
+                    "type": "provider",
+                    "description": "The provider to whom this service area belongs."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "Area name."
+                },
+                "price": {
+                    "type": "float",
+                    "description": "The price for this area."
+                },
+                "coordinates": {
+                    "type": "string",
+                    "description": "A GeoJSON polygon coordinates. A list contaning at least one list of points (list of two integer values) defining a polygon and optinally subsequent lists of points defining exclusions from that polygon."
+                }
+            }
+        }
+    }
+}
